@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>bwf · 稳定路径</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: linear-gradient(145deg, #fce8d5 0%, #f7d6b8 40%, #f2c8a6 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      line-height: 1.65;
+      color: #2d241c;
+    }
+
+    .card {
+      background: rgba(255, 249, 243, 0.96);
+      backdrop-filter: blur(2px);
+      max-width: 780px;
+      width: 100%;
+      border-radius: 40px;
+      box-shadow: 0 16px 40px -12px rgba(140, 80, 40, 0.28),
+                  0 4px 12px rgba(0, 0, 0, 0.04);
+      padding: 3rem 2.5rem;
+      transition: box-shadow 0.25s ease;
+    }
+
+    .hero {
+      margin-bottom: 2.2rem;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: #4f3526;
+      background: linear-gradient(135deg, #7b4d2e 0%, #b47a55 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero .sub {
+      font-size: 1rem;
+      font-weight: 380;
+      color: #6b5342;
+      border-left: 3px solid #d9b38c;
+      padding-left: 1rem;
+      margin-top: 0.2rem;
+    }
+
+    .summary {
+      background: #fef6ed;
+      padding: 1.2rem 1.5rem;
+      border-radius: 24px;
+      margin: 1.8rem 0 2rem;
+      font-size: 0.98rem;
+      color: #31261f;
+      border: 1px solid #ebd8c3;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin: 1.8rem 0 2rem;
+    }
+
+    .feature-item {
+      background: #fcf4ea;
+      border-radius: 20px;
+      padding: 1.2rem 1.2rem 1.2rem 1.5rem;
+      border-left: 5px solid #d6a883;
+      box-shadow: 0 2px 6px rgba(160, 100, 55, 0.06);
+    }
+
+    .feature-item strong {
+      display: block;
+      font-weight: 600;
+      color: #5e3f2c;
+      margin-bottom: 0.3rem;
+      font-size: 1rem;
+    }
+
+    .feature-item span {
+      font-size: 0.9rem;
+      color: #4e3b2e;
+      line-height: 1.5;
+    }
+
+    .scenario {
+      background: #faf0e6;
+      border-radius: 24px;
+      padding: 1.4rem 1.6rem;
+      margin: 1.8rem 0 1.6rem;
+      border: 1px solid #e7d3be;
+    }
+
+    .scenario p {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .scenario p:last-child {
+      margin-bottom: 0;
+    }
+
+    .cta-tip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      background: #eedece;
+      border-radius: 60px;
+      padding: 0.9rem 1.8rem;
+      margin-top: 1.2rem;
+      font-size: 0.95rem;
+      color: #2d1d14;
+    }
+
+    .cta-tip a {
+      display: inline-block;
+      background: #7b4d2e;
+      color: #fcf2e8;
+      text-decoration: none;
+      font-weight: 550;
+      font-size: 1rem;
+      padding: 0.4rem 1.2rem;
+      border-radius: 40px;
+      letter-spacing: 0.01em;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 2px 6px rgba(90, 50, 20, 0.12);
+    }
+
+    .cta-tip a:hover {
+      background: #613d24;
+      transform: scale(1.02);
+    }
+
+    .faq-mini {
+      margin: 2rem 0 1.2rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid #e5cfbb;
+    }
+
+    .faq-mini details {
+      margin-bottom: 0.6rem;
+      font-size: 0.92rem;
+      cursor: pointer;
+    }
+
+    .faq-mini summary {
+      font-weight: 520;
+      color: #4f3829;
+      padding: 0.3rem 0;
+      list-style: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .faq-mini summary::before {
+      content: "▸";
+      margin-right: 0.6rem;
+      color: #a87c5b;
+      transition: transform 0.15s;
+    }
+
+    .faq-mini details[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    .faq-mini .answer {
+      margin: 0.4rem 0 0.6rem 1.4rem;
+      padding-left: 0.6rem;
+      border-left: 2px solid #dbb99a;
+      color: #4d382a;
+    }
+
+    .footnote {
+      font-size: 0.8rem;
+      color: #7d6655;
+      margin-top: 1.8rem;
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 1.2rem 0.8rem;
+      }
+      .card {
+        padding: 1.8rem 1.2rem;
+        border-radius: 28px;
+      }
+      .hero h1 {
+        font-size: 1.7rem;
+      }
+      .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 0.9rem;
+      }
+      .cta-tip {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.7rem;
+        border-radius: 30px;
+        padding: 1rem 1.2rem;
+      }
+      .cta-tip a {
+        align-self: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="hero">
+      <h1>稳定路径 · bwf</h1>
+      <div class="sub">面向常规访问的轻量产品说明</div>
+    </div>
+
+    <div class="summary">
+      本文档概述了 <a href="https://m-bwf.com" style="color:#7b4d2e; font-weight:520; text-decoration:underline; text-underline-offset:3px;">bwf</a> 作为长期可参照地址的定位：它不是一个临时页面，而是一个面向固定用途的端点。以下内容帮助新接触者快速理解其基础逻辑、适用方式与边界。
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>可复用入口</strong>
+        <span>保持对同一资源的稳定指向，减少因路径变动带来的调整成本。适合作为书签或配置项。</span>
+      </div>
+      <div class="feature-item">
+        <strong>轻量结构</strong>
+        <span>无过度封装或繁重依赖，页面本身即构成说明界面，降低额外解释需求。</span>
+      </div>
+      <div class="feature-item">
+        <strong>意图清晰</strong>
+        <span>资源用途、访问方式、适用范围均以文本直接表述，避免歧义或过度承诺。</span>
+      </div>
+      <div class="feature-item">
+        <strong>克制设计</strong>
+        <span>暖色底色与白色卡片仅用于提升可读性，不暗示推荐等级或运营倾向。</span>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <p><strong>▎适用场景示例</strong></p>
+      <p>· 团队内部将 <a href="https://m-bwf.com" style="color:#7b4d2e; font-weight:520; text-decoration:underline; text-underline-offset:3px;">bwf</a> 列为参考地址，用于定期同步或查阅特定资源。</p>
+      <p>· 个人需要一条不易遗忘的路径，在多种设备或网络环境下快速定位同一内容。</p>
+      <p>· 在说明文档或配置手册中引用，作为不带额外追踪参数的干净链接。</p>
+    </div>
+
+    <div class="cta-tip">
+      <span>直接使用该地址作为稳定基点：</span>
+      <a href="https://m-bwf.com">bwf</a>
+    </div>
+
+    <div class="faq-mini">
+      <details>
+        <summary>bwf 是做什么的？</summary>
+        <div class="answer">它是一个指向特定资源的固定地址，页面本身提供使用说明与上下文，帮助初次接触者了解其用途与限制。</div>
+      </details>
+      <details>
+        <summary>这个页面会频繁变化吗？</summary>
+        <div class="answer">内容会依据使用反馈进行适度更新，但核心地址与基础定位保持稳定，避免造成依赖方困扰。</div>
+      </details>
+      <details>
+        <summary>如何确认自己用的是最新说明？</summary>
+        <div class="answer">直接访问 <a href="https://m-bwf.com" style="color:#7b4d2e; text-decoration:underline; text-underline-offset:2px;">bwf</a> 即可获取当前版本，无需额外订阅或通知。</div>
+      </details>
+    </div>
+
+    <div class="footnote">
+      <span>本页仅作为路径说明，不构成功能担保或服务协议。</span>
+    </div>
+  </div>
+</body>
+</html>
